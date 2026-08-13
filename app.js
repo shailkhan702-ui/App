@@ -192,10 +192,22 @@
     $("#r-loading").hidden = !on;
     if (text) $("#r-loading-text").textContent = text;
   }
-  function setError(msg) {
+  function setError(msg, book) {
     var el = $("#r-error");
-    if (!msg) { el.hidden = true; return; }
-    el.hidden = false; el.textContent = msg;
+    if (!msg) { el.hidden = true; el.innerHTML = ""; return; }
+    el.hidden = false;
+    el.innerHTML = "";
+    var p = document.createElement("div");
+    p.textContent = msg;
+    el.appendChild(p);
+    if (book) {
+      var btn = document.createElement("button");
+      btn.className = "btn btn-secondary";
+      btn.style.marginTop = "18px";
+      btn.textContent = "Try again";
+      btn.onclick = function () { setError(""); loadPdf(book); };
+      el.appendChild(btn);
+    }
   }
 
   function openReader(id, page) {
@@ -209,17 +221,58 @@
     loadPdf(b);
   }
 
-  function loadPdf(b) {
-    setLoading(true, "Loading Para " + b.para + "…");
-    if (pdfDoc) { try { pdfDoc.destroy(); } catch (e) {} pdfDoc = null; }
-    var task = pdfjsLib.getDocument({ url: b.file, disableAutoFetch: false });
-    task.onProgress = function (p) {
-      if (p && p.total) {
-        var pct = Math.round((p.loaded / p.total) * 100);
-        setLoading(true, "Loading Para " + b.para + "… " + pct + "%");
+  // Download the whole PDF ourselves, then hand the complete bytes to pdf.js.
+  // This avoids pdf.js internal range/streaming, which is unreliable in iOS
+  // Safari behind a service worker, and it matches our per-Para offline cache.
+  function fetchPdfBytes(url, onPct) {
+    return fetch(url, { cache: "default" }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      var len = parseInt(res.headers.get("Content-Length") || "0", 10);
+      if (!res.body || !res.body.getReader) {
+        return res.arrayBuffer().then(function (ab) { return new Uint8Array(ab); });
       }
-    };
-    task.promise.then(function (doc) {
+      var reader = res.body.getReader();
+      var chunks = [], received = 0;
+      return (function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) {
+            var out = new Uint8Array(received), pos = 0;
+            for (var i = 0; i < chunks.length; i++) { out.set(chunks[i], pos); pos += chunks[i].length; }
+            return out;
+          }
+          chunks.push(r.value); received += r.value.length;
+          if (len && onPct) onPct(Math.min(100, Math.round((received / len) * 100)));
+          return pump();
+        });
+      })();
+    });
+  }
+
+  function loadPdf(b) {
+    setError("");
+    setLoading(true, "Downloading Para " + b.para + "…");
+    if (pdfDoc) { try { pdfDoc.destroy(); } catch (e) {} pdfDoc = null; }
+    var done = false;
+    var watchdog = setTimeout(function () {
+      if (!done) {
+        setLoading(false);
+        setError("This Para is taking too long to open. Please check your internet connection, then tap Try again.", b);
+      }
+    }, 45000);
+
+    fetchPdfBytes(b.file, function (pct) {
+      setLoading(true, "Downloading Para " + b.para + "… " + pct + "%");
+    }).then(function (bytes) {
+      setLoading(true, "Preparing page…");
+      var task = pdfjsLib.getDocument({
+        data: bytes,
+        disableStream: true,
+        disableAutoFetch: true,
+        isEvalSupported: false
+      });
+      return task.promise;
+    }).then(function (doc) {
+      done = true; clearTimeout(watchdog);
       pdfDoc = doc;
       current.total = doc.numPages;
       if (current.page > doc.numPages) current.page = doc.numPages;
@@ -227,17 +280,19 @@
       setLoading(false);
       renderPage();
     }).catch(function (err) {
+      done = true; clearTimeout(watchdog);
       setLoading(false);
-      setError("Could not open this Para. If you are offline and haven't opened it before, connect to the internet once to download it.\n\n(" + (err && err.message ? err.message : err) + ")");
+      var offline = (typeof navigator !== "undefined" && navigator.onLine === false);
+      var msg = offline
+        ? "You are offline and this Para hasn't been downloaded yet. Connect to the internet once to open it, then it will work offline."
+        : "Could not open this Para. Please tap Try again.";
+      setError(msg + "\n\n(" + (err && err.message ? err.message : err) + ")", b);
     });
   }
 
-  function computeFitScale(page) {
-    var wrap = $("#r-canvas-wrap");
-    var avail = wrap.clientWidth - 8;
-    var vp = page.getViewport({ scale: 1 });
-    return Math.max(0.2, avail / vp.width);
-  }
+  // iOS Safari silently fails to paint canvases above a memory limit; cap the
+  // internal pixel area so pages always render (still sharp on phone screens).
+  var MAX_CANVAS_AREA = 5500000;
 
   function renderPage() {
     if (!pdfDoc || !current) return;
@@ -245,16 +300,21 @@
     setError("");
     pdfDoc.getPage(current.page).then(function (page) {
       if (myToken !== renderToken) return;
-      fitScale = computeFitScale(page);
+      var base = page.getViewport({ scale: 1 });
+      fitScale = Math.max(0.2, ($("#r-canvas-wrap").clientWidth - 8) / base.width);
+      var cssScale = fitScale * zoom;              // layout size
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var scale = fitScale * zoom;
-      var viewport = page.getViewport({ scale: scale * dpr });
+      var renderScale = cssScale * dpr;            // internal resolution
+      var area = (base.width * renderScale) * (base.height * renderScale);
+      if (area > MAX_CANVAS_AREA) renderScale *= Math.sqrt(MAX_CANVAS_AREA / area);
+
+      var viewport = page.getViewport({ scale: renderScale });
       var canvas = $("#r-canvas");
       var ctx = canvas.getContext("2d", { alpha: false });
       canvas.width = Math.floor(viewport.width);
       canvas.height = Math.floor(viewport.height);
-      canvas.style.width = Math.floor(viewport.width / dpr) + "px";
-      canvas.style.height = Math.floor(viewport.height / dpr) + "px";
+      canvas.style.width = Math.round(base.width * cssScale) + "px";
+      canvas.style.height = Math.round(base.height * cssScale) + "px";
       canvas.style.transform = "none";
 
       if (renderTask) { try { renderTask.cancel(); } catch (e) {} }
