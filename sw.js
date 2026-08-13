@@ -1,5 +1,5 @@
 /* ===== Madinah Quran — service worker (offline) ===== */
-var VERSION = "mq-v3";
+var VERSION = "mq-v4";
 var SHELL_CACHE = "mq-shell-" + VERSION;
 var PDF_CACHE = "mq-pdf-v1";
 
