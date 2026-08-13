@@ -1,0 +1,276 @@
+{
+  "app": "Madinah Quran",
+  "count": 30,
+  "books": [
+    {
+      "id": 1,
+      "file": "1.pdf",
+      "para": 1,
+      "name": "Alif Lām Mīm",
+      "nameAr": "الم",
+      "pages": 20,
+      "range": "Al-Fātiḥah 1 – Al-Baqarah 141"
+    },
+    {
+      "id": 2,
+      "file": "2.pdf",
+      "para": 2,
+      "name": "Sayaqūl",
+      "nameAr": "سَيَقُول",
+      "pages": 18,
+      "range": "Al-Baqarah 142 – 252"
+    },
+    {
+      "id": 3,
+      "file": "3.pdf",
+      "para": 3,
+      "name": "Tilkal-Rusul",
+      "nameAr": "تِلْكَ الرُّسُل",
+      "pages": 18,
+      "range": "Al-Baqarah 253 – Āl ʿImrān 92"
+    },
+    {
+      "id": 4,
+      "file": "4.pdf",
+      "para": 4,
+      "name": "Lan Tanālū",
+      "nameAr": "لَنْ تَنَالُوا",
+      "pages": 18,
+      "range": "Āl ʿImrān 93 – An-Nisāʾ 23"
+    },
+    {
+      "id": 5,
+      "file": "5.pdf",
+      "para": 5,
+      "name": "Wal-Muḥṣanāt",
+      "nameAr": "وَالْمُحْصَنَات",
+      "pages": 18,
+      "range": "An-Nisāʾ 24 – 147"
+    },
+    {
+      "id": 6,
+      "file": "6.pdf",
+      "para": 6,
+      "name": "Lā Yuḥibbullāh",
+      "nameAr": "لَا يُحِبُّ اللَّه",
+      "pages": 18,
+      "range": "An-Nisāʾ 148 – Al-Māʾidah 81"
+    },
+    {
+      "id": 7,
+      "file": "7.pdf",
+      "para": 7,
+      "name": "Wa Idhā Samiʿū",
+      "nameAr": "وَإِذَا سَمِعُوا",
+      "pages": 18,
+      "range": "Al-Māʾidah 82 – Al-Anʿām 110"
+    },
+    {
+      "id": 8,
+      "file": "8.pdf",
+      "para": 8,
+      "name": "Wa Law Annanā",
+      "nameAr": "وَلَوْ أَنَّنَا",
+      "pages": 18,
+      "range": "Al-Anʿām 111 – Al-Aʿrāf 87"
+    },
+    {
+      "id": 9,
+      "file": "9.pdf",
+      "para": 9,
+      "name": "Qālal-Malaʾu",
+      "nameAr": "قَالَ الْمَلَأ",
+      "pages": 18,
+      "range": "Al-Aʿrāf 88 – Al-Anfāl 40"
+    },
+    {
+      "id": 10,
+      "file": "10.pdf",
+      "para": 10,
+      "name": "Wa-ʿlamū",
+      "nameAr": "وَاعْلَمُوا",
+      "pages": 18,
+      "range": "Al-Anfāl 41 – At-Tawbah 92"
+    },
+    {
+      "id": 11,
+      "file": "11.pdf",
+      "para": 11,
+      "name": "Yaʿtadhirūn",
+      "nameAr": "يَعْتَذِرُونَ",
+      "pages": 18,
+      "range": "At-Tawbah 93 – Hūd 5"
+    },
+    {
+      "id": 12,
+      "file": "12.pdf",
+      "para": 12,
+      "name": "Wa Mā Min Dābbah",
+      "nameAr": "وَمَا مِنْ دَابَّة",
+      "pages": 18,
+      "range": "Hūd 6 – Yūsuf 52"
+    },
+    {
+      "id": 13,
+      "file": "13.pdf",
+      "para": 13,
+      "name": "Wa Mā Ubarriʾu",
+      "nameAr": "وَمَا أُبَرِّئُ",
+      "pages": 18,
+      "range": "Yūsuf 53 – Ibrāhīm 52"
+    },
+    {
+      "id": 14,
+      "file": "14.pdf",
+      "para": 14,
+      "name": "Rubamā",
+      "nameAr": "رُبَمَا",
+      "pages": 18,
+      "range": "Al-Ḥijr 1 – An-Naḥl 128"
+    },
+    {
+      "id": 15,
+      "file": "15.pdf",
+      "para": 15,
+      "name": "Subḥānalladhī",
+      "nameAr": "سُبْحَانَ الَّذِي",
+      "pages": 18,
+      "range": "Al-Isrāʾ 1 – Al-Kahf 74"
+    },
+    {
+      "id": 16,
+      "file": "16.pdf",
+      "para": 16,
+      "name": "Qāla Alam",
+      "nameAr": "قَالَ أَلَمْ",
+      "pages": 18,
+      "range": "Al-Kahf 75 – Ṭā Hā 135"
+    },
+    {
+      "id": 17,
+      "file": "17.pdf",
+      "para": 17,
+      "name": "Aqtaraba",
+      "nameAr": "اقْتَرَبَ",
+      "pages": 18,
+      "range": "Al-Anbiyāʾ 1 – Al-Ḥajj 78"
+    },
+    {
+      "id": 18,
+      "file": "18.pdf",
+      "para": 18,
+      "name": "Qad Aflaḥa",
+      "nameAr": "قَدْ أَفْلَحَ",
+      "pages": 18,
+      "range": "Al-Muʾminūn 1 – Al-Furqān 20"
+    },
+    {
+      "id": 19,
+      "file": "19.pdf",
+      "para": 19,
+      "name": "Wa Qālalladhīna",
+      "nameAr": "وَقَالَ الَّذِينَ",
+      "pages": 18,
+      "range": "Al-Furqān 21 – An-Naml 55"
+    },
+    {
+      "id": 20,
+      "file": "20.pdf",
+      "para": 20,
+      "name": "Aman Khalaqa",
+      "nameAr": "أَمَّنْ خَلَقَ",
+      "pages": 18,
+      "range": "An-Naml 56 – Al-ʿAnkabūt 45"
+    },
+    {
+      "id": 21,
+      "file": "21.pdf",
+      "para": 21,
+      "name": "Utlu Mā Ūḥiya",
+      "nameAr": "اتْلُ مَا أُوحِيَ",
+      "pages": 18,
+      "range": "Al-ʿAnkabūt 46 – Al-Aḥzāb 30"
+    },
+    {
+      "id": 22,
+      "file": "22.pdf",
+      "para": 22,
+      "name": "Wa Man Yaqnut",
+      "nameAr": "وَمَنْ يَقْنُتْ",
+      "pages": 18,
+      "range": "Al-Aḥzāb 31 – Yā Sīn 27"
+    },
+    {
+      "id": 23,
+      "file": "23.pdf",
+      "para": 23,
+      "name": "Wa Mā Liya",
+      "nameAr": "وَمَا لِيَ",
+      "pages": 18,
+      "range": "Yā Sīn 28 – Az-Zumar 31"
+    },
+    {
+      "id": 24,
+      "file": "24.pdf",
+      "para": 24,
+      "name": "Faman Aẓlamu",
+      "nameAr": "فَمَنْ أَظْلَمُ",
+      "pages": 18,
+      "range": "Az-Zumar 32 – Fuṣṣilat 46"
+    },
+    {
+      "id": 25,
+      "file": "25.pdf",
+      "para": 25,
+      "name": "Ilaihi Yuraddu",
+      "nameAr": "إِلَيْهِ يُرَدُّ",
+      "pages": 18,
+      "range": "Fuṣṣilat 47 – Al-Jāthiyah 37"
+    },
+    {
+      "id": 26,
+      "file": "26.pdf",
+      "para": 26,
+      "name": "Ḥā Mīm",
+      "nameAr": "حم",
+      "pages": 18,
+      "range": "Al-Aḥqāf 1 – Adh-Dhāriyāt 30"
+    },
+    {
+      "id": 27,
+      "file": "27.pdf",
+      "para": 27,
+      "name": "Qāla Famā Khaṭbukum",
+      "nameAr": "قَالَ فَمَا خَطْبُكُم",
+      "pages": 18,
+      "range": "Adh-Dhāriyāt 31 – Al-Ḥadīd 29"
+    },
+    {
+      "id": 28,
+      "file": "28.pdf",
+      "para": 28,
+      "name": "Qad Samiʿallāh",
+      "nameAr": "قَدْ سَمِعَ اللَّه",
+      "pages": 18,
+      "range": "Al-Mujādilah 1 – At-Taḥrīm 12"
+    },
+    {
+      "id": 29,
+      "file": "29.pdf",
+      "para": 29,
+      "name": "Tabārakalladhī",
+      "nameAr": "تَبَارَكَ الَّذِي",
+      "pages": 18,
+      "range": "Al-Mulk 1 – Al-Mursalāt 50"
+    },
+    {
+      "id": 30,
+      "file": "30.pdf",
+      "para": 30,
+      "name": "ʿAmma",
+      "nameAr": "عَمَّ",
+      "pages": 27,
+      "range": "An-Nabaʾ 1 – An-Nās 6"
+    }
+  ]
+}

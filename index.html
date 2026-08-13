@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="theme-color" content="#0b5e3b">
+<title>Madinah Quran</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<!-- ================= LIBRARY / HOME ================= -->
+<section id="view-library" class="view is-active">
+  <header class="topbar">
+    <div class="topbar-title">
+      <span class="brand-mark">☾</span>
+      <h1>Madinah Quran</h1>
+    </div>
+    <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode" title="Theme">🌙</button>
+  </header>
+
+  <div class="search-wrap">
+    <input id="search" type="search" inputmode="search" placeholder="Search Para, name or Surah…" autocomplete="off">
+  </div>
+
+  <div id="continue-banner" class="continue-banner" hidden></div>
+
+  <main id="grid" class="grid" aria-label="List of Para"></main>
+  <p id="grid-empty" class="empty" hidden>No results. Try another word.</p>
+  <div class="foot-note">30 Para · Read offline · Your place is saved automatically</div>
+</section>
+
+<!-- ================= BOOK DETAILS ================= -->
+<section id="view-details" class="view">
+  <header class="topbar">
+    <button class="icon-btn back" data-back-to="library" aria-label="Back">‹</button>
+    <div class="topbar-title"><h1 id="d-title">Para</h1></div>
+    <span class="icon-btn ghost"></span>
+  </header>
+  <div class="details">
+    <div id="d-cover" class="cover cover-lg"></div>
+    <h2 id="d-name" class="d-name"></h2>
+    <div id="d-name-ar" class="d-name-ar" dir="rtl"></div>
+    <div id="d-range" class="d-range"></div>
+    <div class="d-meta">
+      <span id="d-pages"></span>
+    </div>
+    <div id="d-progress" class="d-progress"></div>
+    <div class="d-actions">
+      <button id="btn-read" class="btn btn-primary">Read from start</button>
+      <button id="btn-continue" class="btn btn-secondary">Continue reading</button>
+      <button id="btn-bookmarks" class="btn btn-ghost">Bookmarks for this Para</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= READER ================= -->
+<section id="view-reader" class="view reader">
+  <header class="reader-bar reader-top">
+    <button class="icon-btn back" data-back-to="details" aria-label="Back">‹</button>
+    <div id="r-title" class="reader-title">Para</div>
+    <button id="r-bookmark" class="icon-btn" aria-label="Bookmark this page" title="Bookmark">☆</button>
+  </header>
+
+  <div id="r-canvas-wrap" class="reader-canvas-wrap">
+    <canvas id="r-canvas"></canvas>
+    <div id="r-loading" class="reader-loading" hidden>
+      <div class="spinner"></div>
+      <div id="r-loading-text">Loading…</div>
+    </div>
+    <div id="r-error" class="reader-error" hidden></div>
+  </div>
+
+  <footer class="reader-bar reader-bottom">
+    <button id="r-prev" class="nav-btn" aria-label="Previous page">‹ Prev</button>
+    <div class="reader-center">
+      <button id="r-zoom-out" class="icon-btn" aria-label="Zoom out">－</button>
+      <span id="r-page" class="reader-page">1 / 1</span>
+      <button id="r-zoom-in" class="icon-btn" aria-label="Zoom in">＋</button>
+    </div>
+    <button id="r-next" class="nav-btn" aria-label="Next page">Next ›</button>
+  </footer>
+</section>
+
+<!-- ================= BOOKMARKS ================= -->
+<section id="view-bookmarks" class="view">
+  <header class="topbar">
+    <button class="icon-btn back" data-back-to="library" aria-label="Back">‹</button>
+    <div class="topbar-title"><h1 id="bm-title">Bookmarks</h1></div>
+    <span class="icon-btn ghost"></span>
+  </header>
+  <main id="bm-list" class="bm-list"></main>
+  <p id="bm-empty" class="empty" hidden>No bookmarks yet. Open a Para and tap ☆ to save your place.</p>
+</section>
+
+<script src="vendor/pdf.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
