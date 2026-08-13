@@ -1,5 +1,5 @@
 /* ===== Madinah Quran — service worker (offline) ===== */
-var VERSION = "mq-v2";
+var VERSION = "mq-v3";
 var SHELL_CACHE = "mq-shell-" + VERSION;
 var PDF_CACHE = "mq-pdf-v1";
 
@@ -62,9 +62,17 @@ self.addEventListener("fetch", function (e) {
       caches.open(PDF_CACHE).then(function (cache) {
         return cache.match(req).then(function (hit) {
           if (hit) return hit;
+          // Buffer the whole file first, then build two independent responses
+          // (one to cache, one to return). Avoids response.clone() streaming,
+          // which can deadlock in iOS Safari and freeze the download at 100%.
           return fetch(req).then(function (res) {
-            if (res && res.ok) cache.put(req, res.clone());
-            return res;
+            if (!res || !res.ok) return res;
+            var headers = {};
+            res.headers.forEach(function (v, k) { headers[k] = v; });
+            return res.blob().then(function (blob) {
+              try { cache.put(req, new Response(blob, { status: 200, headers: headers })); } catch (e) {}
+              return new Response(blob, { status: 200, headers: headers });
+            });
           });
         });
       })

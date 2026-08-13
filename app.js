@@ -222,29 +222,29 @@
   }
 
   // Download the whole PDF ourselves, then hand the complete bytes to pdf.js.
-  // This avoids pdf.js internal range/streaming, which is unreliable in iOS
-  // Safari behind a service worker, and it matches our per-Para offline cache.
+  // We use XMLHttpRequest (not fetch streaming), because on iOS Safari reading
+  // a streamed/cloned response body can stall at 100% and never finish. XHR
+  // still passes through the service worker, so offline caching keeps working.
   function fetchPdfBytes(url, onPct) {
-    return fetch(url, { cache: "default" }).then(function (res) {
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      var len = parseInt(res.headers.get("Content-Length") || "0", 10);
-      if (!res.body || !res.body.getReader) {
-        return res.arrayBuffer().then(function (ab) { return new Uint8Array(ab); });
-      }
-      var reader = res.body.getReader();
-      var chunks = [], received = 0;
-      return (function pump() {
-        return reader.read().then(function (r) {
-          if (r.done) {
-            var out = new Uint8Array(received), pos = 0;
-            for (var i = 0; i < chunks.length; i++) { out.set(chunks[i], pos); pos += chunks[i].length; }
-            return out;
-          }
-          chunks.push(r.value); received += r.value.length;
-          if (len && onPct) onPct(Math.min(100, Math.round((received / len) * 100)));
-          return pump();
-        });
-      })();
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", url, true);
+      xhr.responseType = "arraybuffer";
+      xhr.onprogress = function (e) {
+        if (e.lengthComputable && onPct) {
+          onPct(Math.min(100, Math.round((e.loaded / e.total) * 100)));
+        }
+      };
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300 && xhr.response) {
+          resolve(new Uint8Array(xhr.response));
+        } else {
+          reject(new Error("HTTP " + xhr.status));
+        }
+      };
+      xhr.onerror = function () { reject(new Error("Network error")); };
+      xhr.ontimeout = function () { reject(new Error("Timed out")); };
+      try { xhr.send(); } catch (e) { reject(e); }
     });
   }
 
@@ -258,12 +258,15 @@
         setLoading(false);
         setError("This Para is taking too long to open. Please check your internet connection, then tap Try again.", b);
       }
-    }, 45000);
+    }, 40000);
 
     fetchPdfBytes(b.file, function (pct) {
       setLoading(true, "Downloading Para " + b.para + "… " + pct + "%");
     }).then(function (bytes) {
       setLoading(true, "Preparing page…");
+      // Let the UI paint "Preparing page…" before pdf.js does heavy parsing.
+      return new Promise(function (res) { setTimeout(function () { res(bytes); }, 60); });
+    }).then(function (bytes) {
       var task = pdfjsLib.getDocument({
         data: bytes,
         disableStream: true,
@@ -539,10 +542,17 @@
         $("#grid-empty").textContent = "Could not load the library list.";
       });
 
-    // register service worker for offline
+    // register service worker for offline; auto-reload once when an update
+    // takes control so new versions land without manual cache clearing.
     if ("serviceWorker" in navigator) {
+      var refreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (refreshing) return; refreshing = true; window.location.reload();
+      });
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("sw.js").catch(function () {});
+        navigator.serviceWorker.register("sw.js").then(function (reg) {
+          try { reg.update(); } catch (e) {}
+        }).catch(function () {});
       });
     }
   }
